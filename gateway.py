@@ -8,7 +8,7 @@ class Gateway:
 
 
     def get_reverse_proxy_config_info(self):
-        return "server{listen " + self.server_port + ";server_name _;location / {proxy_pass http://" + self.vpn_ip + ":" + self.vpn_port + ";}}"
+        return "server{listen " + str(self.server_port) + ";server_name _;location / {proxy_pass http://" + self.vpn_ip + ":" + str(self.vpn_port) + ";}}"
 
 
     def add(self):
