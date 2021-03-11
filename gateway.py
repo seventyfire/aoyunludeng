@@ -21,12 +21,12 @@ def get_client_config_info():
 
 
 device_IMEI = subprocess.check_output(['usi get cellular.status[1].imei']).decode('utf-8')
-if device_IMEI == ''' + self.IMEI + ''':
+if device_IMEI == "''' + self.IMEI + '''":
     if os.system("apt-get install pptp-linux"):
         os.system("echo 'installation error'")
         exit()
     secrets_file = open("/etc/ppp/chap-secrets", "a")
-    secrets_file.write("culiu	PPTP	culiu	''' + self.vpn_ip + ''')
+    secrets_file.write("culiu	PPTP	culiu	''' + self.vpn_ip + '''")
     secrets_file.close()
     client_config_file = open("/etc/ppp/peers/culiu", "w")
     client_config_file.write(get_client_config_info())
