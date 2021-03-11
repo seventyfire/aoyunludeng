@@ -24,7 +24,7 @@ class Gateway:
         reverse_proxy_config_file.write(self.get_reverse_proxy_config_info())
         reverse_proxy_config_file.close()
 
-        os.system("sudo nginx -s reload")
+        os.system("nginx -s reload")
         os.system("echo 'reloaded nginx'")
         # step3. create a new bash script file and send it back to caller
         # script file: use to install vpn app on gateway that have the right IMEI
