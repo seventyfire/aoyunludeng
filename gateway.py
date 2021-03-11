@@ -61,6 +61,7 @@ else:
         # and to config some needed information.
         script_file = open("./script/client_config.py", "w")
         script_file.write(self.get_script_template())
+        script_file.close()
 
 
 
@@ -81,5 +82,5 @@ else:
 
 
 if __name__ == "__main__":
-    gateway = Gateway("0123456789", "172.16.0.102", 5002, "smrtyan.cn", 5002)
+    gateway = Gateway("867698045127654", "172.16.0.102", 5002, "smrtyan.cn", 5002)
     gateway.add()
