@@ -128,7 +128,7 @@ def query_material():
 
 @app.route('/get_test_file', methods=['GET', 'POST'])
 def get_test_file():
-    path = './material/image_files/Melody.jpg'
+    path = './material/text_files/test_file.pdf'
     f = open(path, 'rb')
     base64_str = base64.b64encode(f.read())
     return base64_str
