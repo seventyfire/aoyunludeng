@@ -1,4 +1,5 @@
 import os
+import Image
 from flask import Flask
 from flask import render_template
 from program import Program
@@ -7,6 +8,8 @@ from flask import request, flash, redirect, url_for
 from werkzeug.utils import secure_filename
 from flask_cors import CORS, cross_origin
 import base64
+import json
+from ffmpy import FFmpeg
 
 UPLOAD_FOLDER = './material'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov', 'wmv', 'avi'}
@@ -59,6 +62,7 @@ def get_type_folder(filename):
         return 2, "video_files"
 
 
+
 @app.route('/single_upload', methods=['GET', 'POST'])
 def upload_file():
     print("upload.......")
@@ -78,7 +82,7 @@ def upload_file():
             # filename = secure_filename(file.filename)
             # file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             type, folder = get_type_folder(file.filename)
-            filename = str(time.time()).replace(".", "")
+            filename = str(time.time()).replace(".", "") + "." + file.filename.rsplit('.', 1)[1].lower()
             material = Material(file, filename, app.config['UPLOAD_FOLDER'] + "/" + folder)
             material.save()
             print("\n\n2" + str(file.filename) + "->" + filename + "\n\n")
@@ -104,7 +108,7 @@ def upload_files():
             if file and allowed_file(file.filename):
                 type, folder = get_type_folder(file.filename)
                 # filename = secure_filename(file.filename)
-                filename = str(time.time()).replace(".", "")
+                filename = str(time.time()).replace(".", "") + "." + file.filename.rsplit('.', 1)[1].lower()
                 material = Material(file, filename, app.config['UPLOAD_FOLDER'] + "/" + folder)
                 material.save()
                 print("\n\n2" + str(file.filename) + "->" + filename + "\n\n")
@@ -115,15 +119,87 @@ def upload_files():
 
 @app.route('/get_materials', methods=['GET', 'POST'])
 def query_material():
-    program_name = request.args.get('type')
+    result = {
+        "code": "200",
+        "data": []
+    }
+
+    type = request.args.get('type')
+    materials_path = "./material/"
     if type == 0:  # text
-        pass
+        materials_path += "text_files/"
+        result["type"] = "text"
     elif type == 1:  # image
-        pass
+        materials_path += "image_files/"
+        result["type"] = "image"
+        for subdir, dirs, files in os.walk(materials_path):
+            for file in files:
+                thumbnail_str = get_image_thumbnail_base64(materials_path + file)
+                if thumbnail_str is None:
+                    continue
+                material = {"filename": file, "base64": thumbnail_str}
+                result["data"].append(material)
     elif type == 2:  # video
-        pass
+        materials_path += "video_files/"
+        result["type"] = "video"
+        for subdir, dirs, files in os.walk(materials_path):
+            for file in files:
+                thumbnail_str = get_video_thumbnail_base64(materials_path + file)
+                if thumbnail_str is None:
+                    continue
+                material = {"filename": file, "base64": thumbnail_str}
+                result["data"].append(material)
     else:
         return {"error": "404", "message": "type is not found"}
+
+    return json.dumps(result)
+
+
+def get_image_thumbnail_base64(infile):
+    size = 128, 128
+    outfile = os.path.splitext(infile)[0] + ".thumbnail"
+    if infile != outfile:
+        path = outfile
+        try:
+            f = open(path, "rb")
+        except FileNotFoundError:
+            try:
+                im = Image.open(infile)
+                im.thumbmail(size)
+                im.save(outfile, os.path.splitext(infile)[1][1:])
+                f = open(path, "rb")
+            except IOError:
+                print("can not create thumbnail for ", infile)
+        finally:
+            base64_str = base64.b64encode(f.read())
+            f.close()
+            return base64_str
+    return None
+
+
+def get_video_thumbnail_base64(infile):
+    size = 128, 128
+    outfile = os.path.splitext(infile)[0] + ".videothumbnail"
+    if infile != outfile:
+        path = outfile
+        try:
+            f = open(path, "rb")
+        except FileNotFoundError:
+            try:
+                ff = FFmpeg(inputs={infile: None}, outputs={
+                    os.path.splitext(infile)[0] + ".videothumbnail": ['-ss', '00:00:1', '-vframes', '1']})
+                print(ff.cmd)
+                ff.run()
+                f = open(path, "rb")
+            except IOError:
+                print("can not create thumbnail for ", infile)
+        finally:
+            base64_str = base64.b64encode(f.read())
+            f.close()
+            return base64_str
+    return None
+
+
 
 
 @app.route('/get_test_file', methods=['GET', 'POST'])
@@ -132,6 +208,7 @@ def get_test_file():
     f = open(path, 'rb')
     base64_str = base64.b64encode(f.read())
     return base64_str
+
 
 # @app.route('/clear')
 # def clear_resources():
