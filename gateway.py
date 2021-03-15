@@ -23,7 +23,7 @@ def get_client_config_info():
 
 
 device_IMEI = subprocess.check_output(['usi', 'get', 'cellular.status[1].imei']).decode('utf-8')
-device_IMEI = device_IMEI.strip("\n")
+device_IMEI = device_IMEI.strip("\\n ")
 if device_IMEI == "''' + self.IMEI + '''":
     if os.system("apt-get install pptp-linux"):
         os.system("echo 'installation error'")
