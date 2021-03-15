@@ -4,12 +4,7 @@ import subprocess
 import os
 
 def get_client_config_info():
-    return 'pty "pptp smrtyan.cn --nolaunchpppd"
-name culiu1
-remotename PPTP
-require-mppe-128
-file /etc/ppp/options.pptp
-ipparam culiu1'
+    return 'pty "pptp smrtyan.cn --nolaunchpppd"\nname culiu1\nremotename PPTP\nrequire-mppe-128\nfile /etc/ppp/options.pptp\nipparam culiu1'
 
 
 device_IMEI = subprocess.check_output(['usi', 'get', 'cellular.status[1].imei']).decode('utf-8')
