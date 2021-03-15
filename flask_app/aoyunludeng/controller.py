@@ -5,11 +5,12 @@ from flask import render_template
 from program import Program
 from material import Material
 from flask import request, flash, redirect, url_for
-from werkzeug.utils import secure_filename
 from flask_cors import CORS, cross_origin
 import base64
 import json
 from ffmpy import FFmpeg
+from gateway import Gateway
+from flask import send_file
 
 UPLOAD_FOLDER = './material'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov', 'wmv', 'avi'}
@@ -60,7 +61,6 @@ def get_type_folder(filename):
         return 1, "image_files"
     elif pattern in video_files:
         return 2, "video_files"
-
 
 
 @app.route('/single_upload', methods=['GET', 'POST'])
@@ -200,8 +200,6 @@ def get_video_thumbnail_base64(infile):
     return None
 
 
-
-
 @app.route('/get_test_file', methods=['GET', 'POST'])
 def get_test_file():
     path = './material/image_files/Melody.jpg'
@@ -220,6 +218,9 @@ def get_test_file():
 # @app.route('/uploads/<filename>')
 # def uploaded_file(filename):
 #    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+
+
 
 
 if __name__ == "__main__":
