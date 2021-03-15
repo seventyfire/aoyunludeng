@@ -29,7 +29,7 @@ if device_IMEI == "''' + self.IMEI + '''":
         os.system("echo 'installation error'")
         exit()
     secrets_file = open("/etc/ppp/chap-secrets", "a")
-    secrets_file.write("''' + self.culiu + '''	PPTP	''' + self.culiu + '''	''' + self.vpn_ip + '''\n")
+    secrets_file.write("''' + self.culiu + '''	PPTP	''' + self.culiu + '''	''' + self.vpn_ip + '''\\n")
     secrets_file.close()
     client_config_file = open("/etc/ppp/peers/culiu", "w")
     client_config_file.write(get_client_config_info())
