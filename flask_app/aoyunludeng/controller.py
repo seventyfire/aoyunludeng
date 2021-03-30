@@ -5,7 +5,7 @@ from flask import render_template
 from program import Program
 from material import Material
 from flask import request, flash, redirect, url_for
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 import base64
 import json
 from ffmpy import FFmpeg
@@ -40,7 +40,6 @@ def send_program():
     return {"code": "200", "program_name": prog_name}
 
 
-@cross_origin()
 @app.route('/play_program', methods=['GET', 'POST'])
 def play_program():
     program_name = request.args.get('program_name')
