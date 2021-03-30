@@ -11,7 +11,7 @@ CORS(app)
 @app.route('/add_gateway', methods=['GET', 'POST'])
 def add_gateway_by_IMEI():
     IMEI = request.args.get('IMEI')
-    latest_info_file = open("latest_info", "r")
+    latest_info_file = open("./latest_info", "r")
     # 101,5001,1
     info = latest_info_file.readline().strip().split(",")
     latest_info_file.close()
@@ -27,7 +27,7 @@ def add_gateway_by_IMEI():
     # "867698045127654", "172.16.0.102", 5002, "smrtyan.cn", 5002, "culiu2"
     gateway.add()
 
-    latest_info_file = open("latest_info", "w")
+    latest_info_file = open("./latest_info", "w")
     latest_info_file.write(ip + "," + vpn_port + "," + num)
     latest_info_file.close()
     # return the ./script/client_config.py file
