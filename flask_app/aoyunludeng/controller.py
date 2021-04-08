@@ -124,10 +124,10 @@ def query_material():
 
     type = request.args.get('type')
     materials_path = "./material/"
-    if type == 0:  # text
+    if type == "0":  # text
         materials_path += "text_files/"
         result["type"] = "text"
-    elif type == 1:  # image
+    elif type == "1":  # image
         materials_path += "image_files/"
         result["type"] = "image"
         for subdir, dirs, files in os.walk(materials_path):
@@ -137,7 +137,7 @@ def query_material():
                     continue
                 material = {"filename": file, "base64": thumbnail_str}
                 result["data"].append(material)
-    elif type == 2:  # video
+    elif type == "2":  # video
         materials_path += "video_files/"
         result["type"] = "video"
         for subdir, dirs, files in os.walk(materials_path):
