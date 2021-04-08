@@ -1,5 +1,5 @@
 import os
-import Image
+from PIL import Image
 from flask import Flask
 from flask import render_template
 from program import Program
@@ -9,8 +9,7 @@ from flask_cors import CORS
 import base64
 import json
 from ffmpy import FFmpeg
-from gateway import Gateway
-from flask import send_file
+
 
 UPLOAD_FOLDER = './material'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov', 'wmv', 'avi'}
